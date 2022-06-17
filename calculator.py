@@ -8,9 +8,8 @@
 #BUG: -0.0
 #BUG: clear answer when entering new number after calculating
 #BUG: rounding off really small values (not technically a bug, but fix it)
-#BUG: clicking numbers repeats number on display, but calculation performs just fine
+#BUG: clicking decimal repeats number on display, but calculation performs just fine
 #TODO: add repeated decimal indicator
-#TODO: dynamic button colors
 
 #TODO: CLEAN UP CODE
 #TODO: DOCUMENT CODE
