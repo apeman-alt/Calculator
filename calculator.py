@@ -1,21 +1,16 @@
 #Josh Muszka
 #May 22, 2022
-#Last updated: June 16, 2022
+#Last updated: June 17, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#BUG: buttons slightly vertically misaligned
-#BUG: -0.0
-#BUG: clear answer when entering new number after calculating
-#BUG: rounding off really small values (not technically a bug, but fix it)
-#BUG: clicking decimal repeats number on display, but calculation performs just fine
-#TODO: add repeated decimal indicator
-
 #TODO: CLEAN UP CODE
 #TODO: DOCUMENT CODE
-#TODO: dynamic display resizing
 
 #TODO: negative number support
+#TODO: add repeated decimal indicator
+#TODO: make calculator useable after performing a calculation
+#BUG: rounding off really small values (not technically a bug, but fix it)
 
 import pygame, sys, time
 
@@ -26,7 +21,8 @@ import pygame, sys, time
 #PYGAME CONFIG
 pygame.init()
 pygame.font.init()
-my_font = pygame.font.SysFont('Arial', 40)
+btn_font = pygame.font.SysFont('Arial', 40)
+display_font = pygame.font.SysFont('Arial', 40)
 pygame.display.set_caption("Calculator")
 
 #DISPLAY INFO
@@ -65,9 +61,11 @@ operator_list = ['+']
 
 #rounding final answer
 def round_num(num):
+
     num = round(num, 7) #round number to 14 decimal places
 
     #remove unecessary zeroes from end of number:
+
     num = str(num)
     length = len(num)
 
@@ -92,48 +90,48 @@ def calculate(x,y):
     if int(y) > 120:
                     #convert x,y positions to positions on grid
                     x = int((x/width)*GRID)
-                    y = int((y/(height-80))*GRID)
+                    y = int(((y-120)/(height-120))*GRID)
 
                     #if user clicks a number
-                    if y < 4 and x < 3 or board[y-1][x] == 0:
-                        input = str(input) + str(board[y-1][x]) #get input
-                        display += input
+                    if y <= 2 and x <= 2 or board[y][x] == 0:
+                        input = str(input) + str(board[y][x]) #get input
+                        display+= str(board[y][x])
                     
                     #if user clicks .
-                    if board[y-1][x] == '.':
+                    if board[y][x] == '.':
                         input = str(input) + '.' #get input
-                        display += input
+                        display+='.'
 
                     #if user clicks +
-                    if board[y-1][x] == '+':
+                    if board[y][x] == '+':
                         display+='+'
                         number = str(number)+'+'+str(input)
                         input = '' 
                         operator_list.append('+')
 
                     #if user clicks -
-                    if board[y-1][x] == '-':
+                    if board[y][x] == '-':
                         display+='-'
                         number = str(number)+'-'+str(input)
                         input = '' 
                         operator_list.append('-')
                     
                     #if user clicks *
-                    if board[y-1][x] == '*':
+                    if board[y][x] == '*':
                         display+='*'
                         number = str(number)+'*'+str(input)
                         input = '' 
                         operator_list.append('*')
 
                     #if user clicks /
-                    if board[y-1][x] == '/':
+                    if board[y][x] == '/':
                         display+='/'
                         number = str(number)+'/'+str(input)
                         input = '' 
                         operator_list.append('/')
 
                     #if user clicks =
-                    if (board[y-1][x] == "="):
+                    if (board[y][x] == "="):
                         number = str(number)+'+'+str(input)
 
                         #parse numbers from number
@@ -155,7 +153,9 @@ def calculate(x,y):
                                 total *= float(num_list[i+1])
                             if operator_list[i] == '/':
                                 total /= float(num_list[i+1])
-                        display = round_num(total)
+                        total = round_num(total)
+                        if str(total) == '-0': total = 0 #fixes issue where -0 would appear    
+                        display = total
 
 
 
@@ -176,7 +176,10 @@ while 1:
 
     screen.fill(background_color)
 
-
+    #resize display if necessary:
+    if len(display) > 15:
+        size = 40 * (15/len(display))
+        display_font = pygame.font.SysFont('Arial', int(size))
 
     #draw gridlines
     for i in range(GRID):
@@ -202,11 +205,11 @@ while 1:
             pygame.draw.line(screen, line_color, (0,y1+120), (width, y1+120), 4)
 
             #draw text
-            text = my_font.render(str(board[j][i]), False, (0, 0, 0))
+            text = btn_font.render(str(board[j][i]), False, (0, 0, 0))
             text_rect = text.get_rect(center=(x1+box_w/2+4,y1+120+box_h/2+4)) #center text within respective boxes
             screen.blit(text, text_rect)
 
-    text = my_font.render(str(display), False, (0,0,0))
+    text = display_font.render(str(display), False, (0,0,0))
     screen.blit(text, (10,10))
 
     #draw border
