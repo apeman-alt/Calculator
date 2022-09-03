@@ -120,7 +120,7 @@ def button_click(x,y):
         input = str(board[y][x])
 
         #if user clicks a number, ., +, -, *, or /
-        if y <= 2 and x <= 2 or board[y][x] == 0 or board[y][x] == '+' or board[y][x] == '-' or board[y][x] == '*' or board[y][x] == '/':
+        if y <= 2 and x <= 2 or board[y][x] == 0 or board[y][x] == '.' or board[y][x] == '+' or board[y][x] == '-' or board[y][x] == '*' or board[y][x] == '/':
             equation += input
             display = equation
                     
