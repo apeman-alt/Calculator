@@ -1,6 +1,6 @@
 #Josh Muszka
 #May 22, 2022
-#Last updated: June 17, 2022
+#Last updated: September 3, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
@@ -11,6 +11,7 @@
 #TODO: add repeated decimal indicator
 #TODO: make calculator useable after performing a calculation
 #BUG: rounding off really small values (not technically a bug, but fix it)
+#TODO: error catching for division by zero
 
 import pygame, sys, time
 
@@ -48,11 +49,9 @@ row = [".",0,"=","/"]
 board.append(row)
 
 #CALCULATION VARIABLES
-number = 0
-input = ''
 display = ''
-num_list = []
-operator_list = ['+']
+#num_list = []
+equation = ''
 
 
 ####################################################################
@@ -62,7 +61,7 @@ operator_list = ['+']
 #rounding final answer
 def round_num(num):
 
-    num = round(num, 7) #round number to 14 decimal places
+    num = round(num, 7) #round number to 7 decimal places
 
     #remove unecessary zeroes from end of number:
 
@@ -78,85 +77,53 @@ def round_num(num):
     return num
 
 
-
 #main calculation code
-def calculate(x,y):
-    global input
+def calculate(equation):
+    #parse numlist
+    #parse oplist
+    #answer = numlist[0]
+    #loop to get answer
+
+    op_list = []
+    for i in range(len(equation)):
+        if equation[i] == '+' or equation[i] == '-' or equation[i] == '*' or equation[i] == '/':
+            op_list.append(equation[i])
+            equation = equation.replace(equation[i], ' ', 1)
+    num_list = equation.split()
+
+    answer = float(num_list[0])
+    for i in range(len(op_list)):
+        if op_list[i] == '+': answer += float(num_list[i+1])
+        elif op_list[i] == '-': answer -= float(num_list[i+1])
+        elif op_list[i] == '*': answer *= float(num_list[i+1])
+        elif op_list[i] == '/': answer /= float(num_list[i+1])
+
+    answer = round_num(answer)
+    return answer
+
+    
+#when user clicks a button
+def button_click(x,y):
     global display
-    global number
-    global num_list
-    global operator_list
+    global equation
 
     if int(y) > 120:
-                    #convert x,y positions to positions on grid
-                    x = int((x/width)*GRID)
-                    y = int(((y-120)/(height-120))*GRID)
+        #convert x,y positions to positions on grid
+        x = int((x/width)*GRID)
+        y = int(((y-120)/(height-120))*GRID)
 
-                    #if user clicks a number
-                    if y <= 2 and x <= 2 or board[y][x] == 0:
-                        input = str(input) + str(board[y][x]) #get input
-                        display+= str(board[y][x])
+        input = str(board[y][x])
+
+        #if user clicks a number, ., +, -, *, or /
+        if y <= 2 and x <= 2 or board[y][x] == 0 or board[y][x] == '+' or board[y][x] == '-' or board[y][x] == '*' or board[y][x] == '/':
+            equation += input
+            display = equation
                     
-                    #if user clicks .
-                    if board[y][x] == '.':
-                        input = str(input) + '.' #get input
-                        display+='.'
 
-                    #if user clicks +
-                    if board[y][x] == '+':
-                        display+='+'
-                        number = str(number)+'+'+str(input)
-                        input = '' 
-                        operator_list.append('+')
-
-                    #if user clicks -
-                    if board[y][x] == '-':
-                        display+='-'
-                        number = str(number)+'-'+str(input)
-                        input = '' 
-                        operator_list.append('-')
-                    
-                    #if user clicks *
-                    if board[y][x] == '*':
-                        display+='*'
-                        number = str(number)+'*'+str(input)
-                        input = '' 
-                        operator_list.append('*')
-
-                    #if user clicks /
-                    if board[y][x] == '/':
-                        display+='/'
-                        number = str(number)+'/'+str(input)
-                        input = '' 
-                        operator_list.append('/')
-
-                    #if user clicks =
-                    if (board[y][x] == "="):
-                        number = str(number)+'+'+str(input)
-
-                        #parse numbers from number
-                        number = number.replace('+', ' ')
-                        number = number.replace('-', ' ')
-                        number = number.replace('*', ' ')
-                        number = number.replace('/', ' ')
-                        num_list = number.split()
-                        input = ''
-
-                        #get total
-                        total = 0
-                        for i in range(len(num_list)-1):
-                            if operator_list[i] == '+':
-                                total += float(num_list[i+1])
-                            if operator_list[i] == '-':
-                                total -= float(num_list[i+1])
-                            if operator_list[i] == '*':
-                                total *= float(num_list[i+1])
-                            if operator_list[i] == '/':
-                                total /= float(num_list[i+1])
-                        total = round_num(total)
-                        if str(total) == '-0': total = 0 #fixes issue where -0 would appear    
-                        display = total
-
+        #if user clicks =
+        if (board[y][x] == "="):
+            display = str(calculate(equation))
+            equation = display
 
 
 
@@ -172,14 +139,16 @@ while 1:
             left, middle, right = pygame.mouse.get_pressed()
             if left:
                 x,y = pygame.mouse.get_pos() #get mouse position when user clicks
-                calculate(x,y)
+                button_click(x,y)
 
     screen.fill(background_color)
 
     #resize display if necessary:
-    if len(display) > 15:
-        size = 40 * (15/len(display))
+    if len(str(display)) > 15:
+        size = 40 * (15/len(str(display)))
         display_font = pygame.font.SysFont('Arial', int(size))
+    else: display_font = pygame.font.SysFont('Arial', 40)
+
 
     #draw gridlines
     for i in range(GRID):
