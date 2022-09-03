@@ -11,7 +11,6 @@
 #TODO: add repeated decimal indicator
 #TODO: make calculator useable after performing a calculation
 #BUG: rounding off really small values (not technically a bug, but fix it)
-#TODO: error catching for division by zero
 
 import pygame, sys, time
 
@@ -79,6 +78,8 @@ def round_num(num):
 
 #main calculation code
 def calculate(equation):
+    global display
+
     #parse numlist
     #parse oplist
     #answer = numlist[0]
@@ -96,7 +97,11 @@ def calculate(equation):
         if op_list[i] == '+': answer += float(num_list[i+1])
         elif op_list[i] == '-': answer -= float(num_list[i+1])
         elif op_list[i] == '*': answer *= float(num_list[i+1])
-        elif op_list[i] == '/': answer /= float(num_list[i+1])
+        elif op_list[i] == '/': 
+            try: 
+                answer /= float(num_list[i+1])
+            except ZeroDivisionError:
+                return 'Undefined'
 
     answer = round_num(answer)
     return answer
@@ -124,6 +129,8 @@ def button_click(x,y):
         if (board[y][x] == "="):
             display = str(calculate(equation))
             equation = display
+            if display == 'Undefined': equation = '0'
+
 
 
 
