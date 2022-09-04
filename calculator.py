@@ -4,13 +4,9 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: CLEAN UP CODE
-#TODO: DOCUMENT CODE
-
 #TODO: negative number support
-#TODO: add repeated decimal indicator
-#TODO: make calculator useable after performing a calculation
-#BUG: rounding off really small values (not technically a bug, but fix it)
+#TODO: error catching if user doesn't enter a full equation
+#TODO: error catching if user presses = with no equation entered
 
 import pygame, sys, time
 
@@ -47,34 +43,14 @@ board.append(row)
 row = [".",0,"=","/"]
 board.append(row)
 
-#CALCULATION VARIABLES
-display = ''
-#num_list = []
-equation = ''
+#CALCULATOR VARIABLES
+display = '' #what gets displayed on calculator "screen"
+equation = '' #the sequence of numbers and operators the user enters to be calculated
 
 
 ####################################################################
                         #CALCULATION CODE
 ####################################################################
-
-#rounding final answer
-def round_num(num):
-
-    num = round(num, 7) #round number to 7 decimal places
-
-    #remove unecessary zeroes from end of number:
-
-    num = str(num)
-    length = len(num)
-
-    while num[length-1] == '0': #while the last digit of the number is 0
-        num = num[:(length-1)]
-        length = len(num)
-
-    if num[length-1] == '.': num = num[:(length-1)] #remove uncessecary decimal place
-
-    return num
-
 
 #main calculation code
 def calculate(equation):
@@ -85,12 +61,25 @@ def calculate(equation):
     #answer = numlist[0]
     #loop to get answer
 
+    if equation[0] == '-': equation = '0' + equation
+    elif equation[0] == '+': equation = '0' + equation
+    elif equation[0] == '*' or equation[0] == '/': return 'Error: Incomplete equation'
+    elif equation[0] == '.': equation = '0+0' + equation
+    else: equation = '0+' + equation
+
     op_list = []
     for i in range(len(equation)):
         if equation[i] == '+' or equation[i] == '-' or equation[i] == '*' or equation[i] == '/':
-            op_list.append(equation[i])
-            equation = equation.replace(equation[i], ' ', 1)
+            if equation[i-1] != ' ':
+                    op_list.append(equation[i])
+                    equation = equation.replace(equation[i], ' ', 1)
+
+    #need a separate, slightly different check for '-' to account for negative numbers
+    print(equation)
+    print(op_list)
+
     num_list = equation.split()
+    print(num_list)
 
     answer = float(num_list[0])
     for i in range(len(op_list)):
@@ -106,7 +95,26 @@ def calculate(equation):
     answer = round_num(answer)
     return answer
 
+
+#rounding final answer
+def round_num(num):
+        
+    num = round(num, 7) #round number to 7 decimal places
+
+    #remove unecessary zeroes from end of number:
+
+    num = str(num)
+    length = len(num)
+
+    while num[length-1] == '0': #while the last digit of the number is 0
+        num = num[:(length-1)]
+        length = len(num)
+
+    if num[length-1] == '.': num = num[:(length-1)] #remove uncessecary decimal place
+
+    return num
     
+
 #when user clicks a button
 def button_click(x,y):
     global display
