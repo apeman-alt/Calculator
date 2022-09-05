@@ -4,7 +4,8 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: error catching if user doesn't enter a full equation
+#TODO: allow user to enter any number of operators in a row (+ and - only)
+#TODO: error catching if user doesn't enter a full equation (when numbers and operators don't match)
 #TODO: error catching if user presses = with no equation entered
 #TODO: add a 0 in front of a . if necessary
 
@@ -74,7 +75,7 @@ def calculate(equation):
 
    #generate op_list
     for i in range(len(equation)):
-        if equation[i].isdigit(): equation = equation.replace(equation[i], ' ', 1)
+        if equation[i].isdigit() or equation[i] == '.': equation = equation.replace(equation[i], ' ', 1)
     op_list = equation.split()
 
     for i in range(len(op_list)):
