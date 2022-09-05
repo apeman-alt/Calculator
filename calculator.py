@@ -4,8 +4,6 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: allow user to enter any number of operators in a row (+ and - only)
-#TODO: error catching if user doesn't enter a full equation (when numbers and operators don't match)
 #TODO: error catching if user presses = with no equation entered
 
 import pygame, sys, time
@@ -46,6 +44,8 @@ board.append(row)
 #CALCULATOR VARIABLES
 display = '' #what gets displayed on calculator "screen"
 equation = '' #the sequence of numbers and operators the user enters to be calculated
+SYNTAX_ERROR = 'Syntax error'
+UNDEFINED = 'Undefined'
 
 
 ####################################################################
@@ -63,7 +63,7 @@ def calculate(equation):
 
     if equation[0] == '-': equation = '0' + equation
     elif equation[0] == '+': equation = '0' + equation
-    elif equation[0] == '*' or equation[0] == '/': return 'Error: Incomplete equation'
+    elif equation[0] == '*' or equation[0] == '/': return SYNTAX_ERROR
     elif equation[0] == '.': equation = '0+0' + equation
     else: equation = '0+' + equation
 
@@ -72,25 +72,50 @@ def calculate(equation):
     num_list = []
     equation2 = equation
 
-   #generate op_list
-    for i in range(len(equation)):
-        if equation[i].isdigit() or equation[i] == '.': equation = equation.replace(equation[i], ' ', 1)
-    op_list = equation.split()
-
-    for i in range(len(op_list)):
-        if len(op_list[i]) == 2:
-            if op_list[i][0] == op_list[i][1]: op_list[i] = '+'
-            else: op_list[i] = '-'
-
-
     #generate num_list
     for i in range(len(equation2)):
         if equation2[i] == '+' or equation2[i] == '-' or equation2[i] == '*' or equation2[i] == '/':
             equation2 = equation2.replace(equation2[i], ' ', 1)
     num_list = equation2.split()
 
+   #generate op_list
+    for i in range(len(equation)):
+        if equation[i].isdigit() or equation[i] == '.': equation = equation.replace(equation[i], ' ', 1)
+    op_list = equation.split()
 
-    #END NEW POTENTIALLY BROKEN CODE#
+    #account for negative numbers
+    for i in range(len(op_list)):
+        if len(op_list[i]) == 2:
+            if op_list[i] == '+-' or op_list[i] == '-+': 
+                op_list[i] = '-'
+
+            elif op_list[i] == '*-':
+                op_list[i] = '*'
+                num_list[i+1] = '-' + num_list[i+1]
+
+            elif op_list[i] == '/-':
+                op_list[i] = '/'
+                num_list[i+1] = '-' + num_list[i+1]
+
+            elif op_list[i] == '--':
+                op_list[i] = '+'
+
+            elif op_list[i] == '++':
+                op_list[i] = '+'
+
+            elif op_list[i] == '*+':
+                op_list[i] = '*'
+
+            elif op_list[i] == '/+':
+                op_list[i] = '/'
+
+            else: return SYNTAX_ERROR
+        if len(op_list[i]) > 2: return SYNTAX_ERROR
+
+
+    #check if num_list = op_list + 1
+    #(check if user typed in a full equation, and not something such as: 6+9-3*)
+    if len(num_list) != len(op_list)+1: return SYNTAX_ERROR
 
     answer = float(num_list[0])
     for i in range(len(op_list)):
@@ -101,7 +126,7 @@ def calculate(equation):
             try: 
                 answer /= float(num_list[i+1])
             except ZeroDivisionError:
-                return 'Undefined'
+                return UNDEFINED
 
     answer = round_num(answer)
     return answer
@@ -148,7 +173,8 @@ def button_click(x,y):
         if (board[y][x] == "="):
             display = str(calculate(equation))
             equation = display
-            if display == 'Undefined': equation = '0'
+            if display == UNDEFINED: equation = ''
+            if display == SYNTAX_ERROR: equation = ''
 
 
 
