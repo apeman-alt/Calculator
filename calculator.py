@@ -1,10 +1,13 @@
-#VERSION: 1.0.1
+#VERSION: 1.1.1
 
 #Josh Muszka
 #May 22, 2022
 #Last updated: September 5, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
+
+#TODO: make new buttons functionable
+#TODO: make backspace delete a character in equation
 
 import pygame, sys, time
 
@@ -15,7 +18,7 @@ import pygame, sys, time
 #PYGAME CONFIG
 pygame.init()
 pygame.font.init()
-btn_font = pygame.font.SysFont('Arial', 40)
+btn_font = pygame.font.SysFont('Arial', 33)
 display_font = pygame.font.SysFont('Arial', 40)
 pygame.display.set_caption("Calculator")
 
@@ -30,15 +33,17 @@ btn_hovering_color = 0xFA, 0xE0, 0x96
 btn_down_color = 0xCA, 0xB0, 0x66
 
 #BUTTON SETUP
-GRID = 4
+GRID = 5
 board=[] #0 if space hasn't been filled, 1 if filled by x, -1 if filled by o
-row = [1,2,3,"+"]
+row = ['^','sin','cos','tan','AC']
 board.append(row)
-row = [4,5,6,"-"]
+row = ['√',1,2,3,"+"]
 board.append(row)
-row = [7,8,9,"*"]
+row = ['(',4,5,6,"-"]
 board.append(row)
-row = [".",0,"=","/"]
+row = [')',7,8,9,"*"]
+board.append(row)
+row = ['ln',".",0,"=","/"]
 board.append(row)
 
 #CALCULATOR VARIABLES
@@ -167,14 +172,43 @@ def button_click(x,y):
 
         input = str(board[y][x])
 
-        #if user clicks a number, ., +, -, *, or /
-        if y <= 2 and x <= 2 or board[y][x] == 0 or board[y][x] == '.' or board[y][x] == '+' or board[y][x] == '-' or board[y][x] == '*' or board[y][x] == '/':
+        #if user clicks a number, 
+        if input.isdigit():
             equation += input
             display = equation
-                    
+
+        #if user clicks ., +, -, *, or /
+        if input == '.' or input == '+' or input == '-' or input == '*' or input == '/':
+            equation += input
+            display = equation
+
+        #if user clicks AC
+        if input == 'AC':
+            equation = ''
+            display = equation
+
+        #if user clicks ( or )
+        if input == '(' or input == ')':
+            equation += input
+            display = equation
+
+        #if user clicks sin, cos, tan, or ln
+        if input == 'sin' or input == 'cos' or input == 'tan' or input == 'ln':
+            equation += input + '('
+            display = equation
+
+        #if user clicks ^
+        if input == '^':
+            equation += input
+            display = equation
+
+        #if user clicks √
+        if input == '√':
+            equation += 'sqrt('
+            display = equation
 
         #if user clicks =
-        if (board[y][x] == "="):
+        if input == "=":
             if equation != '': display = str(calculate(equation)) #if equation is not null // if user has entered something
             equation = display
             if display == UNDEFINED: equation = ''
