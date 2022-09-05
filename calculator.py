@@ -1,4 +1,4 @@
-#VERSION: 1.1.1
+#VERSION: 1.2.1
 
 #Josh Muszka
 #May 22, 2022
@@ -6,7 +6,6 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make backspace delete a character in equation
 #TODO: make brackets functionable
 #TODO: make sin, cos, tan, sqrt, and ln functionable
 #TODO: make exponents functionable
@@ -245,7 +244,14 @@ def button_click(x,y):
             if display == UNDEFINED: equation = ''
             if display == SYNTAX_ERROR: equation = ''
 
+def backspace():
+    global display
+    global equation
 
+    if len(equation) > 0:
+        length = len(equation)-1
+        equation = equation.replace(equation[length], '', 1)
+        display = equation
 
 
 ####################################################################
@@ -261,6 +267,9 @@ while 1:
             if left:
                 x,y = pygame.mouse.get_pos() #get mouse position when user clicks
                 button_click(x,y)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                backspace()
 
     screen.fill(background_color)
 
