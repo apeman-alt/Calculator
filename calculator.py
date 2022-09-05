@@ -6,8 +6,10 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make new buttons functionable
 #TODO: make backspace delete a character in equation
+#TODO: make brackets functionable
+#TODO: make sin, cos, tan, sqrt, and ln functionable
+#TODO: make exponents functionable
 
 import pygame, sys, time
 
@@ -57,6 +59,33 @@ UNDEFINED = 'Undefined'
                         #CALCULATION CODE
 ####################################################################
 
+#check for valid brackets
+def bracket_check(equation):
+
+    #count # of open and close brackets
+    open_count = 0
+    close_count = 0
+
+    for i in range(len(equation)):
+        if equation[i] == '(': open_count+=1
+        if equation[i] == ')': close_count+=1
+
+    if open_count == close_count: #if there's the same number of open and closed brackets
+        open_count = 0
+        close_count = 0
+
+        #if the number of closed brackets ever exceeds the number of open brackets, then the bracket sequence must be invalid
+        for i in range(len(equation)):
+            if equation[i] == '(': open_count += 1
+            elif equation[i] == ')': close_count += 1
+
+            if close_count > open_count: 
+                return False
+
+    else: return False
+
+    return True
+
 #main calculation code
 def calculate(equation):
     global display
@@ -68,9 +97,11 @@ def calculate(equation):
 
     if equation[0] == '-': equation = '0' + equation
     elif equation[0] == '+': equation = '0' + equation
-    elif equation[0] == '*' or equation[0] == '/': return SYNTAX_ERROR
+    elif equation[0] == '*' or equation[0] == '/' or equation[0] == '^': return SYNTAX_ERROR
     elif equation[0] == '.': equation = '0+0' + equation
     else: equation = '0+' + equation
+
+    print(bracket_check(equation))
 
     #NEW POTENTIALLY BROKEN CODE#
     op_list = []
