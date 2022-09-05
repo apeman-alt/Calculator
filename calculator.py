@@ -7,7 +7,6 @@
 #TODO: allow user to enter any number of operators in a row (+ and - only)
 #TODO: error catching if user doesn't enter a full equation (when numbers and operators don't match)
 #TODO: error catching if user presses = with no equation entered
-#TODO: add a 0 in front of a . if necessary
 
 import pygame, sys, time
 
