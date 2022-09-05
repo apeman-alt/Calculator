@@ -1,10 +1,10 @@
+#VERSION: 1.0.1
+
 #Josh Muszka
 #May 22, 2022
-#Last updated: September 4, 2022
+#Last updated: September 5, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
-
-#TODO: error catching if user presses = with no equation entered
 
 import pygame, sys, time
 
@@ -112,6 +112,10 @@ def calculate(equation):
             else: return SYNTAX_ERROR
         if len(op_list[i]) > 2: return SYNTAX_ERROR
 
+    #check if all numbers are valid
+    for i in range(len(num_list)):
+        try: float(num_list[i])
+        except: return SYNTAX_ERROR
 
     #check if num_list = op_list + 1
     #(check if user typed in a full equation, and not something such as: 6+9-3*)
@@ -171,7 +175,7 @@ def button_click(x,y):
 
         #if user clicks =
         if (board[y][x] == "="):
-            display = str(calculate(equation))
+            if equation != '': display = str(calculate(equation)) #if equation is not null // if user has entered something
             equation = display
             if display == UNDEFINED: equation = ''
             if display == SYNTAX_ERROR: equation = ''
