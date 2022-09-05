@@ -1,12 +1,12 @@
 #Josh Muszka
 #May 22, 2022
-#Last updated: September 3, 2022
+#Last updated: September 4, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: negative number support
 #TODO: error catching if user doesn't enter a full equation
 #TODO: error catching if user presses = with no equation entered
+#TODO: add a 0 in front of a . if necessary
 
 import pygame, sys, time
 
@@ -67,19 +67,30 @@ def calculate(equation):
     elif equation[0] == '.': equation = '0+0' + equation
     else: equation = '0+' + equation
 
+    #NEW POTENTIALLY BROKEN CODE#
     op_list = []
+    num_list = []
+    equation2 = equation
+
+   #generate op_list
     for i in range(len(equation)):
-        if equation[i] == '+' or equation[i] == '-' or equation[i] == '*' or equation[i] == '/':
-            if equation[i-1] != ' ':
-                    op_list.append(equation[i])
-                    equation = equation.replace(equation[i], ' ', 1)
+        if equation[i].isdigit(): equation = equation.replace(equation[i], ' ', 1)
+    op_list = equation.split()
 
-    #need a separate, slightly different check for '-' to account for negative numbers
-    print(equation)
-    print(op_list)
+    for i in range(len(op_list)):
+        if len(op_list[i]) == 2:
+            if op_list[i][0] == op_list[i][1]: op_list[i] = '+'
+            else: op_list[i] = '-'
 
-    num_list = equation.split()
-    print(num_list)
+
+    #generate num_list
+    for i in range(len(equation2)):
+        if equation2[i] == '+' or equation2[i] == '-' or equation2[i] == '*' or equation2[i] == '/':
+            equation2 = equation2.replace(equation2[i], ' ', 1)
+    num_list = equation2.split()
+
+
+    #END NEW POTENTIALLY BROKEN CODE#
 
     answer = float(num_list[0])
     for i in range(len(op_list)):
