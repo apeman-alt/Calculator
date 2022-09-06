@@ -1,14 +1,13 @@
-#VERSION: 1.2.1
+#VERSION: 1.3.1
 
 #Josh Muszka
 #May 22, 2022
-#Last updated: September 5, 2022
+#Last updated: September 6, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
 #TODO: make brackets functionable
 #TODO: make sin, cos, tan, sqrt, and ln functionable
-#TODO: make exponents functionable
 
 import pygame, sys, time
 
@@ -85,6 +84,33 @@ def bracket_check(equation):
 
     return True
 
+def exponents(equation):
+    equation3 = equation
+
+    #remove unecessary operators
+    for i in range(len(equation3)):
+        if equation3[i] == '+' or equation3[i] == '-' or equation3[i] == '*' or equation3[i] == '/':
+            equation3 = equation3.replace(equation3[i], ' ', 1)
+    list = []
+    list = equation3.split()
+
+    #gather all expressions involving exponents ('^')
+    list2 = []
+    for i in list:
+        if '^' in i: list2.append(i)
+    #evaluate exponential expressions
+    list3 = list2[:]
+    answer = 1
+    for i in range(len(list3)):
+        list3[i] = list3[i].split('^')
+        for j in range(len(list3[i])-1, -1, -1):
+            answer = float(list3[i][j]) ** answer
+        #replace exponential expression with answer
+        equation = equation.replace(str(list2[i]), str(answer), 1)
+        answer = 1
+
+    return equation
+
 #main calculation code
 def calculate(equation):
     global display
@@ -100,7 +126,8 @@ def calculate(equation):
     elif equation[0] == '.': equation = '0+0' + equation
     else: equation = '0+' + equation
 
-    print(bracket_check(equation))
+    #evaluate exponential expressions
+    equation = exponents(equation)
 
     #NEW POTENTIALLY BROKEN CODE#
     op_list = []
