@@ -84,6 +84,35 @@ def bracket_check(equation):
 
     return True
 
+def simplify_brackets(equation):
+    index_list = []
+    for i in range(len(equation)-1):
+        if equation[i] == ')':
+            if  equation[i+1] == '(':
+                substr1 =  equation[0:i+1]
+                substr2 = equation[i+1:]
+                #equation = substr1 + '*' + substr2
+                index_list.append(i+1)
+            elif equation[i+1].isdigit():
+                substr1 =  equation[0:i+1]
+                substr2 = equation[i+1:]
+                #equation = substr1 + '*' + substr2
+                index_list.append(i+1)
+        elif equation[i].isdigit():
+            if equation[i+1] == '(':
+                substr1 =  equation[0:i+1]
+                substr2 = equation[i+1:]
+                #equation = substr1 + '*' + substr2
+                index_list.append(i+1)
+
+    for i in range(len(index_list)-1, -1, -1):
+        index = index_list[i]
+        substr1 = equation[0:index]
+        substr2 = equation[index:]
+        equation = substr1 + '*' + substr2
+
+    return equation
+
 def exponents(equation):
     equation3 = equation
 
@@ -126,6 +155,13 @@ def calculate(equation):
     elif equation[0] == '.': equation = '0+0' + equation
     else: equation = '0+' + equation
 
+    #check if brackets are valid
+    if not bracket_check(equation): 
+        return SYNTAX_ERROR
+
+    #simplify brackets
+    equation = simplify_brackets(equation)
+    print(equation)
     #evaluate exponential expressions
     equation = exponents(equation)
 
