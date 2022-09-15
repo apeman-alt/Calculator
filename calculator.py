@@ -1,8 +1,8 @@
-#VERSION: 1.3.1
+#VERSION: 1.4.1
 
 #Josh Muszka
 #May 22, 2022
-#Last updated: September 6, 2022
+#Last updated: September 14, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
