@@ -1,4 +1,4 @@
-#VERSION: 1.5.1
+#VERSION: 1.7.1
 
 #Josh Muszka
 #May 22, 2022
@@ -6,12 +6,13 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make sin, cos, tan, sqrt, and ln functionable
+#TODO: make tan, sqrt, and ln functionable
 #TODO: add order of operations
 #TODO: when backspacing "sin(", "cos(", "sqrt(", etc., backspace the whole term instead of making user backspace each individual character
 #BUG: syntax error when handling negative numbers
 
 import pygame, sys, time
+import functions as f
 
 ####################################################################
                             #SETUP
@@ -115,47 +116,24 @@ def simplify_brackets(equation):
 
     return equation
 
-def exponents(equation):
-    equation3 = equation
-
-    #remove unecessary operators
-    for i in range(len(equation3)):
-        if equation3[i] == '+' or equation3[i] == '-' or equation3[i] == '*' or equation3[i] == '/':
-            equation3 = equation3.replace(equation3[i], ' ', 1)
-    list = []
-    list = equation3.split()
-
-    #gather all expressions involving exponents ('^')
-    list2 = []
-    for i in list:
-        if '^' in i: list2.append(i)
-    #evaluate exponential expressions
-    list3 = list2[:]
-    answer = 1
-    for i in range(len(list3)):
-        list3[i] = list3[i].split('^')
-        for j in range(len(list3[i])-1, -1, -1):
-            answer = float(list3[i][j]) ** answer
-        #replace exponential expression with answer
-        equation = equation.replace(str(list2[i]), str(answer), 1)
-        answer = 1
-
-    return equation
-
 #main calculation code
 def evaluate_expression(equation):
     #parse numlist
     #parse oplist
     #answer = numlist[0]
     #loop to get answer
-    print(equation)
+
     if equation[0] == '(' and equation[len(equation)-1]:
         equation = equation.replace(equation[0], '')
         equation = equation.replace(equation[len(equation)-1], '')
-    print(equation)
 
-    #evaluate exponential expressions
-    equation = exponents(equation)
+    #evaluate transcendental expressions
+    equation = f.exponents(equation) #exponents
+    equation = f.sin(equation) #sine
+    equation = f.cos(equation) #cosine
+    #tangent
+    #sqrt
+    #ln
 
     #NEW POTENTIALLY BROKEN CODE#
     op_list = []
