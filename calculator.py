@@ -1,13 +1,15 @@
-#VERSION: 1.4.1
+#VERSION: 1.5.1
 
 #Josh Muszka
 #May 22, 2022
-#Last updated: September 14, 2022
+#Last updated: September 16, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make brackets functionable
 #TODO: make sin, cos, tan, sqrt, and ln functionable
+#TODO: add order of operations
+#TODO: when backspacing "sin(", "cos(", "sqrt(", etc., backspace the whole term instead of making user backspace each individual character
+#BUG: syntax error when handling negative numbers
 
 import pygame, sys, time
 
@@ -141,27 +143,17 @@ def exponents(equation):
     return equation
 
 #main calculation code
-def calculate(equation):
-    global display
-
+def evaluate_expression(equation):
     #parse numlist
     #parse oplist
     #answer = numlist[0]
     #loop to get answer
-
-    if equation[0] == '-': equation = '0' + equation
-    elif equation[0] == '+': equation = '0' + equation
-    elif equation[0] == '*' or equation[0] == '/' or equation[0] == '^': return SYNTAX_ERROR
-    elif equation[0] == '.': equation = '0+0' + equation
-    else: equation = '0+' + equation
-
-    #check if brackets are valid
-    if not bracket_check(equation): 
-        return SYNTAX_ERROR
-
-    #simplify brackets
-    equation = simplify_brackets(equation)
     print(equation)
+    if equation[0] == '(' and equation[len(equation)-1]:
+        equation = equation.replace(equation[0], '')
+        equation = equation.replace(equation[len(equation)-1], '')
+    print(equation)
+
     #evaluate exponential expressions
     equation = exponents(equation)
 
@@ -230,13 +222,58 @@ def calculate(equation):
             except ZeroDivisionError:
                 return UNDEFINED
 
-    answer = round_num(answer)
+    #answer = round_num(answer)
     return answer
 
+def calculate(equation):
+
+    if equation[0] == '-': equation = '0' + equation
+    elif equation[0] == '+': equation = '0' + equation
+    elif equation[0] == '*' or equation[0] == '/' or equation[0] == '^': return SYNTAX_ERROR
+    elif equation[0] == '.': equation = '0+0' + equation
+    else: equation = '0+' + equation
+
+    equation = '(' + equation + ')'
+
+    #check if brackets are valid
+    if not bracket_check(equation): 
+        return SYNTAX_ERROR
+
+    #simplify brackets
+    equation = simplify_brackets(equation)
+
+    #count number of bracket pairs
+    n=0
+    for i in range(len(equation)):
+        if equation[i] == '(':
+            n+=1
+    #evaluate each bracket pair
+    substr1 = ''
+    substr2 = ''
+    while n > 0:
+        for i in range(len(equation)-1, -1, -1):
+            if equation[i] == '(':
+                for j in range(i, len(equation)):
+                    if equation[j] == ')':
+                        substr1 = equation[i:j+1]
+                        substr2 = str(evaluate_expression(substr1))
+                        break
+                break
+
+        eq_fragments = equation.split(substr1,1)
+
+        if len(eq_fragments) == 1:
+            equation = eq_fragments[0] + substr2
+        else:
+            equation = eq_fragments[0] + substr2 + eq_fragments[1]
+        n-=1 
+
+    answer = evaluate_expression(equation)
+    return answer
 
 #rounding final answer
 def round_num(num):
-        
+
     num = round(num, 7) #round number to 7 decimal places
 
     #remove unecessary zeroes from end of number:
