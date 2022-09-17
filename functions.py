@@ -81,3 +81,31 @@ def cos(equation):
         equation = equation.replace('cos'+list3[i], str(answer))
     return equation
 
+def tan(equation):
+    equation3 = equation
+
+    #remove unecessary operators
+    for i in range(len(equation3)):
+        if equation3[i] == '+' or equation3[i] == '*' or equation3[i] == '/':
+            equation3 = equation3.replace(equation3[i], ' ', 1)
+    for i in range(1, len(equation3)):
+        if equation[i] == '-':
+            if i >= 1:
+                if equation[i-1] != 'n':
+                    equation3 = equation3.replace(equation3[i], ' ', 1)
+
+    list = []
+    list = equation3.split()
+
+    list2 = []
+    for i in list:
+        if 'tan' in i: list2.append(i)
+
+    list3=list2[:]
+    for i in range(len(list3)):
+        list3[i] = list3[i].replace('tan', '')
+        if float(list3[i])%(math.pi/2) == 0: return 'Undefined'
+        answer = math.tan(float(list3[i]))
+        equation = equation.replace('tan'+list3[i], str(answer))
+    return equation
+

@@ -131,7 +131,7 @@ def evaluate_expression(equation):
     equation = f.exponents(equation) #exponents
     equation = f.sin(equation) #sine
     equation = f.cos(equation) #cosine
-    #tangent
+    equation = f.tan(equation) #tangent
     #sqrt
     #ln
 
