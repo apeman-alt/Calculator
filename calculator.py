@@ -1,4 +1,4 @@
-#VERSION: 1.8.1
+#VERSION: 1.9.1
 
 #Josh Muszka
 #May 22, 2022
@@ -6,7 +6,7 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make sqrt, and ln functionable
+#TODO: make ln functionable
 #TODO: add order of operations
 #TODO: when backspacing "sin(", "cos(", "sqrt(", etc., backspace the whole term instead of making user backspace each individual character
 #BUG: syntax error when handling negative numbers
@@ -132,7 +132,7 @@ def evaluate_expression(equation):
     equation = f.sin(equation) #sine
     equation = f.cos(equation) #cosine
     equation = f.tan(equation) #tangent
-    #sqrt
+    equation = f.sqrt(equation) #square root
     #ln
 
     #NEW POTENTIALLY BROKEN CODE#
