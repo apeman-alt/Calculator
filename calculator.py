@@ -133,7 +133,7 @@ def evaluate_expression(equation):
     equation = f.cos(equation) #cosine
     equation = f.tan(equation) #tangent
     equation = f.sqrt(equation) #square root
-    #ln
+    equation = f.ln(equation) #ln
 
     #NEW POTENTIALLY BROKEN CODE#
     op_list = []
