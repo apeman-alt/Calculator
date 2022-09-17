@@ -1,12 +1,12 @@
-#VERSION: 1.7.1
+#VERSION: 1.8.1
 
 #Josh Muszka
 #May 22, 2022
-#Last updated: September 16, 2022
+#Last updated: September 17, 2022
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make tan, sqrt, and ln functionable
+#TODO: make sqrt, and ln functionable
 #TODO: add order of operations
 #TODO: when backspacing "sin(", "cos(", "sqrt(", etc., backspace the whole term instead of making user backspace each individual character
 #BUG: syntax error when handling negative numbers
