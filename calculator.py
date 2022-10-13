@@ -6,10 +6,12 @@
 #Calculator -- use it to solve arithmetic
 #can perform any basic arithmetic operation on any rational value
 
-#TODO: make ln functionable
 #TODO: add order of operations
 #TODO: when backspacing "sin(", "cos(", "sqrt(", etc., backspace the whole term instead of making user backspace each individual character
-#BUG: syntax error when handling negative numbers
+#BUG: convert from float to int when necessary
+#BUG: exponent to the power of a function not parsing exponent properly ie. 3^ln(6) doesnt work
+#BUG: evaluating really small inputs for ln ie. ln(0.000000001) crashes the program
+#TODO: add keyboard input
 
 import pygame, sys, time
 import functions as f
@@ -245,8 +247,9 @@ def calculate(equation):
         else:
             equation = eq_fragments[0] + substr2 + eq_fragments[1]
         n-=1 
-
-    answer = evaluate_expression(equation)
+    
+    #answer = evaluate_expression(equation)
+    answer = equation
     return answer
 
 #rounding final answer
